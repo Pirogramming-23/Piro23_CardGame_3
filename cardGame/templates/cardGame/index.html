@@ -1,18 +1,31 @@
+{% load static %}
 {% load socialaccount %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>피로그래밍 카드게임</title>
-</head>
-<body>
-    <h1>피로그래머 카드게임에 오신 걸 환영합니다!</h1>
+    <title>숫자 카드 게임</title>
+    <link rel="stylesheet" href="{% static 'cardGame/style.css' %}">
+    </head>
+    <body>
+    <div class="container">
+        <h1>🃏 숫자 카드 게임</h1>
 
-    {% if user.is_authenticated %}
-        <p>안녕하세요, {{ user.username }}님!</p>
-        <a href="{% url 'account_logout' %}">🔓 로그아웃</a>
-    {% else %}
-        <a href="{% provider_login_url 'google' %}?next=/">🔐 구글 로그인</a>
-    {% endif %}
+        {% if user.is_authenticated and user_data %}
+        <div class="user-info">
+            <p><strong>{{ user_data.username }}</strong>님 환영합니다 🎉</p>
+            <p><small>{{ user_data.email }}</small></p>
+            <p class="uid">Google UID: {{ user_data.google_id }}</p>
+
+            <form action="/game/start/" method="get">
+            <button class="btn primary">🎮 게임 시작</button>
+            </form>
+            <a class="btn secondary" href="{% url 'account_logout' %}">🔓 로그아웃</a>
+        </div>
+        {% else %}
+        <p>게임을 시작하려면 구글 계정으로 로그인해주세요.</p>
+        <a class="btn primary" href="{% provider_login_url 'google' %}?next=/">🔐 구글 로그인</a>
+        {% endif %}
+    </div>
 </body>
 </html>
