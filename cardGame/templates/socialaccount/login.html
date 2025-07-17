@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Google 로그인 안내</title>
+    <link rel="stylesheet" href="{% static 'cardGame/style.css' %}">
+    <style>
+        body {
+        background: linear-gradient(to right, #e3f2fd, #ffffff);
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        }
+        .login-box {
+        background-color: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 400px;
+        }
+        h2 {
+        margin-bottom: 10px;
+        font-size: 22px;
+        }
+        p {
+        color: #444;
+        font-size: 14px;
+        }
+        button {
+        margin-top: 20px;
+        background-color: #4285F4;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        }
+        button:hover {
+        background-color: #3367D6;
+        }
+    </style>
+    </head>
+    <body>
+    <div class="login-box">
+        <h2>Google을 통한 로그인</h2>
+        <p>소셜 Google 계정을 사용해 로그인하려면 아래 버튼을 클릭해주세요.</p>
+
+        <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">계속</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그아웃</title>
+    <link rel="stylesheet" href="{% static 'cardGame/style.css' %}">
+    <style>
+        body {
+        background: linear-gradient(to right, #fff3e0, #ffffff);
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        }
+        .logout-box {
+        background-color: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 400px;
+        }
+        h2 {
+        margin-bottom: 10px;
+        font-size: 22px;
+        }
+        p {
+        color: #444;
+        font-size: 14px;
+        margin-bottom: 20px;
+        }
+        button {
+        background-color: #e53935;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        }
+        button:hover {
+        background-color: #c62828;
+        }
+    </style>
+    </head>
+    <body>
+    <div class="logout-box">
+        <h2>로그아웃</h2>
+        <p>정말로 로그아웃 하시겠습니까?</p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button type="submit">🔓 로그아웃</button>
+        </form>
+    </div>
+</body>
+</html>
