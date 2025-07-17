@@ -1,0 +1,18 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>피로그래밍 카드게임</title>
+</head>
+<body>
+    <h1>피로그래머 카드게임에 오신 걸 환영합니다!</h1>
+
+    {% if user.is_authenticated %}
+        <p>안녕하세요, {{ user.username }}님!</p>
+        <a href="{% url 'account_logout' %}">🔓 로그아웃</a>
+    {% else %}
+        <a href="{% provider_login_url 'google' %}?next=/">🔐 구글 로그인</a>
+    {% endif %}
+</body>
+</html>
