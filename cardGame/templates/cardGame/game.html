@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반격하기 게임</title>
+    <link rel="stylesheet" href="{% static 'cardGame/style.css' %}">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 카드 선택 페이지 (첫 번째 페이지) -->
+        <div class="card-selection-page" id="card-selection-page">
+            <h1 class="game-title">반격할 카드를 고르세요</h1>
+            <div class="game-status">
+                <p>상대방이 카드를 선택했습니다.</p>
+            </div>
+            
+            <div class="card-selection-title">
+                반격할 카드 :
+            </div>
+            
+            <div class="cards-container" id="cards-container">
+                <!-- 5개 카드 동적 생성 -->
+            </div>
+            
+            <button class="counter-attack-btn" id="counter-attack-btn" onclick="executeCounterAttack()" disabled>
+                반격하기
+            </button>
+        </div>
+
+        <!-- 게임 결과 페이지 (두 번째 페이지) -->
+        <div class="game-result-page" id="game-result-page">
+            <div class="vs-title" id="vs-title">
+                <!-- 동적으로 생성: 6 - user4 VS user1 -->
+            </div>
+            
+            <div class="game-info" id="game-info">
+                <!-- 게임 정보 표시 -->
+            </div>
+            
+            <div class="cards-comparison">
+                <div class="player-card">
+                    <h4>내 카드</h4>
+                    <div class="card my-card" id="my-result-card">
+                        <!-- 내 카드 숫자 -->
+                    </div>
+                </div>
+                
+                <div class="vs-text">VS</div>
+                
+                <div class="player-card">
+                    <h4>상대방 카드</h4>
+                    <div class="card opponent-card" id="opponent-result-card">
+                        <!-- 상대방 카드 숫자 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-message" id="result-message">
+                <!-- 승부 결과 -->
+            </div>
+            
+            <button class="new-game-btn" onclick="goToList()">전체목록</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedCard = null;
+        let opponentCard = null;
+        let myCards = [];
+        let gameState = 'selecting';
+        let isHigherWins = true; // true: 큰 숫자가 승리, false: 작은 숫자가 승리
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            initializeGame();
+        };
+
+        // 게임 초기화
+        function initializeGame() {
+            // 상대방 카드 랜덤 생성 (1-10)
+            opponentCard = Math.floor(Math.random() * 10) + 1;
+            
+            // 승리 조건 랜덤 설정 (50% 확률)
+            isHigherWins = Math.random() < 0.5;
+            
+            // 내 카드 5개 랜덤 생성 (1-10, 중복 없음)
+            generateMyCards();
+            
+            // 카드 선택 페이지 표시
+            showCardSelectionPage();
+            
+            console.log('상대방 카드:', opponentCard); // 디버깅용
+            console.log('승리 조건:', isHigherWins ? '큰 숫자 승리' : '작은 숫자 승리'); // 디버깅용
+        };
+
+        // 내 카드 5개 생성
+        function generateMyCards() {
+            const numbers = Array.from({length: 10}, (_, i) => i + 1);
+            myCards = [];
+            
+            // 5개 랜덤 선택
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(Math.random() * numbers.length);
+                myCards.push(numbers[randomIndex]);
+                numbers.splice(randomIndex, 1);
+            }
+            
+            displayMyCards();
+        }
+
+        // 내 카드 표시
+        function displayMyCards() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            
+            myCards.forEach((cardNumber, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.textContent = cardNumber;
+                cardElement.onclick = () => selectCard(cardNumber, index);
+                container.appendChild(cardElement);
+            });
+        }
+
+        // 카드 선택
+        function selectCard(cardNumber, index) {
+            if (gameState !== 'selecting') return;
+            
+            selectedCard = cardNumber;
+            
+            // 모든 카드에서 selected 클래스 제거
+            const allCards = document.querySelectorAll('.cards-container .card');
+            allCards.forEach(card => {
+                card.classList.remove('selected');
+                card.disabled = true;
+            });
+            
+            // 선택된 카드에 selected 클래스 추가
+            allCards[index].classList.add('selected');
+            
+            // 반격 버튼 활성화
+            document.getElementById('counter-attack-btn').disabled = false;
+        }
+
+        // 반격 실행
+        function executeCounterAttack() {
+            if (!selectedCard || gameState !== 'selecting') return;
+            
+            gameState = 'finished';
+            
+            // 결과 페이지로 전환
+            showGameResultPage();
+        }
+
+        // 카드 선택 페이지 표시
+        function showCardSelectionPage() {
+            document.getElementById('card-selection-page').style.display = 'block';
+            document.getElementById('game-result-page').style.display = 'none';
+        }
+
+        // 게임 결과 페이지 표시
+        function showGameResultPage() {
+            document.getElementById('card-selection-page').style.display = 'none';
+            document.getElementById('game-result-page').style.display = 'block';
+            
+            // 결과 정보 표시
+            displayGameResult();
+        }
+
+        // 게임 결과 표시
+        function displayGameResult() {
+            // VS 제목 설정
+            const vsTitle = document.getElementById('vs-title');
+            vsTitle.textContent = `${selectedCard} - user4 VS user1`;
+            
+            // 게임 정보 설정
+            const gameInfo = document.getElementById('game-info');
+            const winCondition = isHigherWins ? '숫자가 큰 사람이 이깁니다' : '숫자가 작은 사람이 이깁니다';
+            gameInfo.innerHTML = `
+                <p>선택한 카드: ${selectedCard}</p>
+                <p>상대방 카드: ${opponentCard}</p>
+                <p><strong>${winCondition}</strong></p>
+            `;
+            
+            // 카드 표시
+            document.getElementById('my-result-card').textContent = selectedCard;
+            document.getElementById('opponent-result-card').textContent = opponentCard;
+            
+            // 승부 결과 계산 및 표시
+            const resultMessage = document.getElementById('result-message');
+            let result = '';
+            let resultClass = '';
+            let myScore = 0;
+            let opponentScore = 0;
+            
+            let isWin = false;
+            if (selectedCard === opponentCard) {
+                result = '무승부!';
+                resultClass = 'draw';
+                // 무승부일 경우 점수 변동 없음
+            } else if (isHigherWins) {
+                // 큰 숫자가 승리하는 경우
+                if (selectedCard > opponentCard) {
+                    result = '승리!';
+                    resultClass = 'win';
+                    isWin = true;
+                } else {
+                    result = '패배!';
+                    resultClass = 'lose';
+                }
+            } else {
+                // 작은 숫자가 승리하는 경우
+                if (selectedCard < opponentCard) {
+                    result = '승리!';
+                    resultClass = 'win';
+                    isWin = true;
+                } else {
+                    result = '패배!';
+                    resultClass = 'lose';
+                }
+            }
+            
+            // 점수 계산
+            if (result === '승리!') {
+                myScore = selectedCard;
+                opponentScore = -opponentCard;
+            } else if (result === '패배!') {
+                myScore = -selectedCard;
+                opponentScore = opponentCard;
+            }
+            
+            // 결과 메시지에 점수 포함
+            if (result === '무승부!') {
+                resultMessage.innerHTML = `${result}<br>점수 변동 없음`;
+            } else {
+                resultMessage.innerHTML = `${result}<br>내 점수: ${myScore > 0 ? '+' : ''}${myScore} | 상대방 점수: ${opponentScore > 0 ? '+' : ''}${opponentScore}`;
+            }
+            
+            resultMessage.className = `result-message ${resultClass}`;
+        }
+
+        // 새 게임 시작
+        function resetGame() {
+            gameState = 'selecting';
+            selectedCard = null;
+            
+            // 반격 버튼 비활성화
+            document.getElementById('counter-attack-btn').disabled = true;
+            
+            // 게임 재초기화
+            initializeGame();
+        }
+
+        // 전체목록으로 이동
+        function goToList() {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html> 

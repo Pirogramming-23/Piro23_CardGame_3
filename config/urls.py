@@ -22,6 +22,7 @@ from cardGame.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('cardGame.urls')),
+    path('', index, name='index'),
+    path('cardGame/', include('cardGame.urls')),
     path('accounts/', include('allauth.urls')),
 ]
