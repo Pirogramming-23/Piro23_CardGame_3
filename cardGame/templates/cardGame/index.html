@@ -3,15 +3,21 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>피로그래밍 카드게임</title>
+    <title>숫자 카드 게임</title>
 </head>
 <body>
-    <h1>피로그래머 카드게임에 오신 걸 환영합니다!</h1>
+    <h1>👋 숫자 카드 게임에 오신 걸 환영합니다!</h1>
 
-    {% if user.is_authenticated %}
-        <p>안녕하세요, {{ user.username }}님!</p>
+    {% if user.is_authenticated and user_data %}
+        <p>안녕하세요, {{ user_data.username }}님!</p>
+        <p>이메일: {{ user_data.email }}</p>
+        <p>식별자(Google UID): {{ user_data.google_id }}</p>
+        <form action="/game/start/" method="get">
+            <button type="submit">🎮 게임 시작</button>
+        </form>
         <a href="{% url 'account_logout' %}">🔓 로그아웃</a>
     {% else %}
+        <p>게임을 시작하려면 로그인하세요.</p>
         <a href="{% provider_login_url 'google' %}?next=/">🔐 구글 로그인</a>
     {% endif %}
 </body>
