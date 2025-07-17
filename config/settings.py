@@ -157,3 +157,4 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+AUTH_USER_MODEL = 'cardGame.User'
