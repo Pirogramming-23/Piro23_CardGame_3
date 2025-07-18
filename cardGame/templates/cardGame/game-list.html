@@ -34,17 +34,14 @@
                     <button type="submit" class="cancelgame-btn">게임 취소</button>
                 </form>
             {% elif game.defender == request.user %}
-                <form action="{% url 'counter_attack' game.pk %}{#game_mgp 로 수정#}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="counterattack-btn">CounterAttack</button>
-                </form>
+                <a href="{% url 'game_mgp' %}" class="counterattack-btn">CounterAttack</a>
             {% endif %}
         {% else %}
             <div class="game-status">알 수 없는 게임 상태</div>
         {% endif %}
     </div>
     <div class="game-detail-btn">
-        <a href="{% url 'game_detail' game.pk %}" class="btn primary">게임 정보</a>
+        <a href="{% url 'game_mgp' %}" class="btn primary">게임 정보</a>
     </div>
 </div>
 {% empty %}
