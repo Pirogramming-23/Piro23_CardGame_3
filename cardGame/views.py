@@ -36,10 +36,10 @@ def game_list(request):
 def cancel_game(request, pk):
     game = Game.objects.get(id=pk)
     game.delete()
-    return redirect('cardGame/game-list.html')
+    return redirect('game_list')
 
-def counter_attack(request, pk):
-    # 반격하기 기능
+def counter_attack(request):
+    # 반격
     pass
 
 def start_new_game(request):

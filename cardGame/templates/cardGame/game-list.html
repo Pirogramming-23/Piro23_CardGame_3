@@ -34,7 +34,7 @@
                     <button type="submit" class="cancelgame-btn">게임 취소</button>
                 </form>
             {% elif game.defender == request.user %}
-                <form action="{% url 'counter_attack' game.pk %}" method="post">
+                <form action="{% url 'counter_attack' game.pk %}{#game_mgp 로 수정#}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="counterattack-btn">CounterAttack</button>
                 </form>
