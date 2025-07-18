@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
-from django.shortcuts import render, redirect
-from allauth.socialaccount.models import SocialAccount
+from .models import Game, User
+from django.db.models import Q
 
 def index(request):
     user_data = None
@@ -26,9 +26,27 @@ def game_start(request):
 
 def game_list(request):
     social = SocialAccount.objects.get(user=request.user)
-    #records = Record.objects.all()
+    games = Game.objects.filter(Q(attacker=request.user) | Q(defender=request.user)).select_related('attacker', 'defender', 'winner').order_by('-created_at')
     context = {
-        #'records': records,
         'username': request.user.username,
+        'games' : games,
     }
     return render(request, 'cardGame/game-list.html', context=context)
+
+def cancel_game(request, pk):
+    game = Game.objects.get(id=pk)
+    game.delete()
+    return redirect('cardGame/game-list.html')
+
+def counter_attack(request, pk):
+    # 반격하기 기능
+    pass
+
+def start_new_game(request):
+    # 새로운 게임
+    pass
+
+def game_detail(request, pk):
+    game = Game.objects.get(id=pk)
+    context = {'game': game}
+    return render(request, 'cardGame/game-detail.html', context=context)

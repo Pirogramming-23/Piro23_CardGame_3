@@ -37,6 +37,6 @@ class Ranking(models.Model):
 
 class GameLog(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='logs')
-    action = models.CharField(max_length=20)  # 'attack', 'defense', 'result' 등
+    action = models.CharField(max_length=20)  # 'attack', 'defense', 'result' 등 - status
     detail = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
