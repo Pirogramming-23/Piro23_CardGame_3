@@ -66,7 +66,7 @@
 <p>카드를 선택해 상대방에게 도전하세요.</p>
 
 <form id="gameForm" method="post" action="{% url 'create_game' %}">
-  {% csrf_token %}
+  {% csrf_token %} //랜덤숫자카드들
   <div class="card-box">
     {% for card_number in available_cards %}
     <div class="card" data-card-value="{{ card_number }}">
