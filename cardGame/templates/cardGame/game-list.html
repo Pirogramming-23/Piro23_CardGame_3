@@ -41,7 +41,7 @@
         {% endif %}
     </div>
     <div class="game-detail-btn">
-        <a href="{% url 'game_mgp' %}" class="btn primary">게임 정보</a>
+        <a href="{% url 'game_detail' game.pk %}" class="btn primary">게임 정보</a>
     </div>
 </div>
 {% empty %}

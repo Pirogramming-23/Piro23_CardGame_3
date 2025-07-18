@@ -332,6 +332,68 @@ def start_new_game(request):
     pass
 
 def game_detail(request, pk):
-    game = Game.objects.get(id=pk)
-    context = {'game': game}
-    return render(request, 'cardGame/game-detail.html', context=context)
+    game = get_object_or_404(Game, id=pk)
+    
+    # 모든 게임에 대해 결과창 표시 (완료된 게임이든 진행 중인 게임이든)
+    if game.status == 'completed':
+        # 완료된 게임: 실제 결과 표시
+        if game.winner == request.user:
+            result = '승리!'
+            result_class = 'win'
+        elif game.winner:
+            result = '패배!'
+            result_class = 'lose'
+        else:
+            result = '무승부!'
+            result_class = 'draw'
+        
+        # 점수 계산
+        if game.winner == request.user:
+            my_score = game.point_change
+            opponent_score = -game.point_change
+        elif game.winner:
+            my_score = -game.point_change
+            opponent_score = game.point_change
+        else:
+            my_score = 0
+            opponent_score = 0
+        
+        # 상대방 이름 결정
+        if request.user == game.attacker:
+            opponent_username = game.defender.username
+            my_card = game.attacker_card
+            opponent_card = game.defender_card
+        else:
+            opponent_username = game.attacker.username
+            my_card = game.defender_card
+            opponent_card = game.attacker_card
+    else:
+        # 진행 중인 게임: 예상 결과 표시 (실제 카드는 아직 선택되지 않음)
+        if request.user == game.attacker:
+            opponent_username = game.defender.username
+            my_card = game.attacker_card
+            opponent_card = "?"  # 아직 선택되지 않음
+        else:
+            opponent_username = game.attacker.username
+            my_card = "?"  # 아직 선택되지 않음
+            opponent_card = game.attacker_card
+        
+        result = '게임 진행 중'
+        result_class = 'pending'
+        my_score = 0
+        opponent_score = 0
+    
+    context = {
+        'selected_card': my_card,
+        'opponent_card': opponent_card,
+        'result': result,
+        'result_class': result_class,
+        'my_score': my_score,
+        'opponent_score': opponent_score,
+        'game_state': 'finished',
+        'win_condition': '숫자가 큰 사람이 이깁니다' if game.win_condition == 'high' else '숫자가 작은 사람이 이깁니다',
+        'opponent_username': opponent_username,
+        'is_game_detail': True
+    }
+    
+    return render(request, 'cardGame/game_mgp.html', context)
