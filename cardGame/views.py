@@ -69,3 +69,7 @@ def update_ranking(user: User):
 def ranking_view(request):
     rankings = Ranking.objects.select_related('user').order_by('-point')
     return render(request, 'ranking/ranking.html', {'rankings': rankings})
+
+def ranking_all(request):
+    rankings = Ranking.objects.select_related('user').order_by('-point')
+    return render(request, 'ranking/ranking_all.html', {'rankings': rankings})
