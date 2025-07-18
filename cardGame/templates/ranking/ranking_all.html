@@ -62,12 +62,41 @@
       background: #5d2b7f;
       color: white;
     }
+
+    .card-box {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .card {
+      width: 60px;
+      height: 80px;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      background-color: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      background-color: #d1ffe8;
+      border-color: #00aa88;
+    }
+
+    .section-divider {
+      margin: 40px 0 20px;
+      border-top: 1px dashed #aaa;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h2>Piro 전체 랭킹</h2>
+    <h2>전적 로그 화면</h2>
 
     {% if rankings %}
     <table class="ranking-list">
@@ -90,6 +119,22 @@
     </table>
     {% else %}
     <p style="text-align: center;">아직 등록된 랭킹이 없습니다.</p>
+    {% endif %}
+
+    <!-- 반격 UI 영역 -->
+    {% if pending_game %}
+    <div class="section-divider"></div>
+    <h3 style="text-align: center; color: #5d2b7f;">🛡️ 반격 기회가 도착했습니다!</h3>
+    <p style="text-align: center;">{{ pending_game.attacker.username }} 님이 당신에게 도전했습니다.<br>카드를 골라 반격하세요!</p>
+
+    <form method="POST" style="text-align: center;">
+      {% csrf_token %}
+      <div class="card-box">
+        {% for card in defense_cards %}
+          <button type="submit" name="selected_card" value="{{ card }}" class="card">{{ card }}</button>
+        {% endfor %}
+      </div>
+    </form>
     {% endif %}
 
     <a href="{% url 'ranking' %}" class="back-button">← 돌아가기</a>

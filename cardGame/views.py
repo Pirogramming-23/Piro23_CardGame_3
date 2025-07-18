@@ -22,12 +22,32 @@ def index(request):
 
 @login_required
 def game_start(request):
-    #1부터 10까지의 숫자 중 랜덤으로 5개 카드 생성
+    # 1부터 10까지의 숫자 중 랜덤으로 5개 카드 생성
     available_cards = random.sample(range(1, 11), 5)
-    
-    #현재 사용자를 제외한 모든 User 객체
-    other_users = User.objects.exclude(id=request.user.id) 
-    return render(request, 'cardGame/game.html')
+
+    # 현재 사용자를 제외한 모든 User 객체
+    other_users = User.objects.exclude(id=request.user.id)
+
+    # user에 대해 이미 진행 중인 게임이 있는지 확인 (선택 사항)
+    users_with_game_status = []
+    for user in other_users:
+        has_pending_game = Game.objects.filter(
+            attacker=request.user,
+            defender=user,
+            status='pending'
+        ).exists()
+        users_with_game_status.append({
+            'user': user,
+            'has_pending_game': has_pending_game
+        })
+
+    context = {
+        'available_cards': available_cards,
+        'other_users_with_status': users_with_game_status,
+    }
+
+    return render(request, 'cardGame/game_nyc.html', context)
+
 
 
 
@@ -63,38 +83,59 @@ def process_game_result(game: Game):
     update_ranking(attacker)
     update_ranking(defender)
 
-#랭킹 갱신 함수 
 def update_ranking(user: User):
-    ranking, created = Ranking.objects.get_or_create(user=user)
-    ranking.point = user.point
+    ranking, created = Ranking.objects.get_or_create(
+        user=user,
+        defaults={
+            'point': user.point,
+            'rank': None  # 또는 0
+        }
+    )
 
-    ranking.save()
+    # 이미 있었던 경우 → 점수 갱신
+    if not created:
+        ranking.point = user.point
+        ranking.save()
+
+    # 전체 랭킹 순위 재계산
+    all_rankings = Ranking.objects.order_by('-point')
+    for idx, r in enumerate(all_rankings, start=1):
+        r.rank = idx
+        r.save()
+
+
 
 def ranking_view(request):
     rankings = Ranking.objects.select_related('user').order_by('-point')
     return render(request, 'ranking/ranking.html', {'rankings': rankings})
 
+@login_required
 def ranking_all(request):
+    user = request.user
     rankings = Ranking.objects.select_related('user').order_by('-point')
-    return render(request, 'ranking/ranking_all.html', {'rankings': rankings})
-    #user에 대해 이미 진행 중인 게임이 있는지 확인
-    users_with_game_status = []
-    for user in other_users:
-        has_pending_game = Game.objects.filter(
-            attacker=request.user,
-            defender=user,
-            status='pending'
-        ).exists()
-        users_with_game_status.append({
-            'user': user,
-            'has_pending_game': has_pending_game
-        })
 
+    # 현재 유저가 수비자인 pending 게임이 있는지 확인
+    pending_game = Game.objects.filter(defender=user, status='pending').first()
+
+    if request.method == 'POST' and pending_game:
+        # 수비자가 반격할 카드 선택
+        selected_card = int(request.POST.get('selected_card'))
+        pending_game.defender_card = selected_card
+
+        # 승부 판정 및 랭킹 갱신
+        process_game_result(pending_game)
+
+        return redirect('ranking_all')
+
+    # GET 요청 시
     context = {
-        'available_cards': available_cards,
-        'other_users_with_status': users_with_game_status,
+        'rankings': rankings,
+        'pending_game': pending_game,
+        'defense_cards': random.sample(range(1, 11), 5) if pending_game else None,
     }
-    return render(request, 'cardGame/game_nyc.html', context)
+
+    return render(request, 'ranking/ranking_all.html', context)
+
 
 @login_required
 def game_mgp(request):
