@@ -31,9 +31,10 @@ class Game(models.Model):
 
 class Ranking(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    rank = models.IntegerField()
+    rank = models.IntegerField(null=True) 
     point = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class GameLog(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='logs')
