@@ -16,10 +16,10 @@
             <a href="" class="logo">Pirogramming Card Game</a>
             <ol class="navbar">
                 {% if user.is_authenticated and user_data %}
-                <li><a>로그인</a></li>
-                <li><a>회원가입</a></li>
+                <li><a href="{% url 'index' %}">로그인</a></li>
+                <li><a href="/accounts/signup/">회원가입</a></li>
                 {% else %}
-                <li><a href="/game/start/" >게임하기</a></li>
+                <li><a href="/game/start/">게임하기</a></li>
                 <li><a>랭킹보기</a></li>
                 <li><a href="{% url 'account_logout' %}">로그아웃</a></li>
                 {% endif %}
