@@ -1,102 +1,94 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>Piro 전체 랭킹</title>
-  <style>
-    body {
-      background-color: #fbeae3;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
+{% extends 'base.html' %}
+{% load static %}
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-    }
+{% block head %}
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+  }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #5d2b7f;
-    }
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #5d2b7f;
+  }
 
-    .ranking-list {
-      width: 100%;
-      border-collapse: collapse;
-    }
+  .ranking-list {
+    width: 100%;
+    border-collapse: collapse;
+  }
 
-    .ranking-list th, .ranking-list td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
+  .ranking-list th, .ranking-list td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+  }
 
-    .ranking-list th {
-      background-color: #fbc1a1;
-      color: #5d2b7f;
-    }
+  .ranking-list th {
+    background-color: #fbc1a1;
+    color: #5d2b7f;
+  }
 
-    .ranking-list tr:hover {
-      background-color: #fdf1ec;
-    }
+  .ranking-list tr:hover {
+    background-color: #fdf1ec;
+  }
 
-    .back-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 8px 16px;
-      background: transparent;
-      border: 2px solid #5d2b7f;
-      color: #5d2b7f;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: 0.3s;
-    }
+  .back-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 2px solid #5d2b7f;
+    color: #5d2b7f;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+  }
 
-    .back-button:hover {
-      background: #5d2b7f;
-      color: white;
-    }
+  .back-button:hover {
+    background: #5d2b7f;
+    color: white;
+  }
 
-    .card-box {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px 0;
-    }
+  .card-box {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+  }
 
-    .card {
-      width: 60px;
-      height: 80px;
-      border-radius: 8px;
-      border: 2px solid #ccc;
-      background-color: white;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+  .card {
+    width: 60px;
+    height: 80px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    background-color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
 
-    .card:hover {
-      background-color: #d1ffe8;
-      border-color: #00aa88;
-    }
+  .card:hover {
+    background-color: #d1ffe8;
+    border-color: #00aa88;
+  }
 
-    .section-divider {
-      margin: 40px 0 20px;
-      border-top: 1px dashed #aaa;
-    }
-  </style>
-</head>
-<body>
+  .section-divider {
+    margin: 40px 0 20px;
+    border-top: 1px dashed #aaa;
+  }
+</style>
+{% endblock %}
 
-  <div class="container">
-    <h2>전적 로그 화면</h2>
+{% block content %}
+<div class="container">
+  <h2>전적 로그 화면</h2>
 
     {% if rankings %}
     <table class="ranking-list">
@@ -122,9 +114,7 @@
     {% endif %}
     </form>
 
-    <a href="{% url 'ranking' %}" class="back-button">← 돌아가기</a>
+    <a href="{% url 'ranking' %}" class="back-button">명예의 전당</a>
     <a href="{% url 'index' %}" class="back-button">🏠 메인화면으로</a>
   </div>
-
-</body>
-</html>
+{% endblock %}
