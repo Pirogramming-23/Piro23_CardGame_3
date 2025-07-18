@@ -1,72 +1,10 @@
 {% extends 'base.html' %} {% block content %}
-<style>
-  body {
-    font-family: "Segoe UI", sans-serif;
-    background-color: #f2f2f2;
-    text-align: center;
-    padding: 40px;
-  }
-  .card-box {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
-  }
-  .card {
-    width: 120px;
-    height: 180px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-    border: 3px solid transparent;
-  }
-  .card.selected {
-    border: 3px solid #00aa88;
-    transform: scale(1.05);
-    background-color: #e0ffe0;
-  }
-  .card:hover:not(.selected) {
-    transform: scale(1.05);
-    background-color: #e0ffe0;
-  }
-  button {
-    margin-top: 40px;
-    padding: 12px 24px;
-    font-size: 16px;
-    border: none;
-    background-color: #00aa88;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #008066;
-  }
 
-  button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  .user-select-box {
-    margin-top: 30px;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-</style>
 <h1>🎮 게임을 시작합니다!</h1>
 <p>카드를 선택해 상대방에게 도전하세요.</p>
 
 <form id="gameForm" method="post" action="{% url 'create_game' %}">
-  {% csrf_token %} //랜덤숫자카드들
+  {% csrf_token %}
   <div class="card-box">
     {% for card_number in available_cards %}
     <div class="card" data-card-value="{{ card_number }}">
