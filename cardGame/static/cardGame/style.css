@@ -64,3 +64,78 @@ h1 {
 .btn.secondary:hover {
     background-color: #ccc;
 }
+
+
+/* ///////////////////////////////////////////// */
+
+
+.ranking-card {
+    background: #5d2b7f;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px #2e1a3f;
+    width: 600px;
+    margin: 40px auto;
+    text-align: center;
+    color: #fbc1a1;
+  }
+  
+  .ranking-card h2 {
+    border-bottom: 1px solid #fbc1a1;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-size: 24px;
+  }
+  
+  .ranking-card .highlight {
+    font-weight: bold;
+    color: #fbc1a1;
+  }
+  
+  .bars {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 30px;
+    margin-bottom: 20px;
+  }
+  
+  .bar {
+    background: #fca46e;
+    width: 80px;
+    position: relative;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 10px;
+  }
+  
+  .user {
+    position: absolute;
+    top: -40px;
+    font-size: 14px;
+    color: white;
+    text-align: center;
+  }
+  
+  .score {
+    font-weight: bold;
+  }
+  
+  .rank {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  button {
+    background: transparent;
+    border: 2px solid #fbc1a1;
+    color: #fbc1a1;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  /* //////////////////////////////////////////////// */

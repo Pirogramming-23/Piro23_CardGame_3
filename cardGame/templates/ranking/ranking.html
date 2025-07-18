@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Piro 명예의 전당</title>
+  <style>
+    body {
+      background-color: #fbeae3;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .ranking-card {
+      background: #5d2b7f;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 5px 5px 10px #2e1a3f;
+      width: 600px;
+      margin: 60px auto;
+      text-align: center;
+      color: #fbc1a1;
+    }
+
+    .ranking-card h2 {
+      border-bottom: 1px solid #fbc1a1;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .ranking-card .highlight {
+      font-weight: bold;
+      color: #fbc1a1;
+    }
+
+    .bars {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bar {
+      background: #fca46e;
+      width: 80px;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 10px;
+      position: relative;
+    }
+
+    .bar:nth-child(1) { height: 180px; }
+    .bar:nth-child(2) { height: 150px; }
+    .bar:nth-child(3) { height: 120px; }
+
+    .rank {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .user-info {
+      margin-top: 8px;
+      font-size: 14px;
+      color: white;
+      text-align: center;
+    }
+
+    .score {
+      font-weight: bold;
+      display: block;
+      margin-top: 2px;
+    }
+
+    button {
+      background: transparent;
+      border: 2px solid #fbc1a1;
+      color: #fbc1a1;
+      padding: 8px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #fbc1a1;
+      color: #5d2b7f;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ranking-card">
+    <h2><span class="highlight">Piro</span> 명예의 전당</h2>
+    <div class="bars">
+      <!-- 1위 -->
+      <div class="bar-group">
+        <div class="bar" style="height: 180px;">
+          <div class="rank">1</div>
+        </div>
+        <div class="user-info">
+          user2<br />
+          <span class="score">11점</span>
+        </div>
+      </div>
+
+      <!-- 2위 -->
+      <div class="bar-group">
+        <div class="bar" style="height: 150px;">
+          <div class="rank">2</div>
+        </div>
+        <div class="user-info">
+          user1<br />
+          <span class="score">-1점</span>
+        </div>
+      </div>
+
+      <!-- 3위 -->
+      <div class="bar-group">
+        <div class="bar" style="height: 120px;">
+          <div class="rank">3</div>
+        </div>
+        <div class="user-info">
+          user4<br />
+          <span class="score">-6점</span>
+        </div>
+      </div>
+    </div>
+    <!-- {% if rankings %}
+    <div class="bars">
+      {% for ranking in rankings %}
+        {% if forloop.counter <= 3 %}
+        <div class="bar-group">
+          <div class="bar" style="height: {{ ranking.point|add:120 }}px;">
+            <div class="rank">{{ forloop.counter }}</div>
+          </div>
+          <div class="user-info">
+            {{ ranking.user.username }}<br />
+            <span class="score">{{ ranking.point }}점</span>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>아직 랭킹에 등록된 유저가 없습니다.</p>
+  {% endif %} -->
+      
+
+    <button onclick="alert('전적 목록으로 이동합니다')">전적 목록</button>
+  </div>
+
+</body>
+</html>
