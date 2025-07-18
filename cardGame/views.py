@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
-from .models import Game, User, views
+from .models import Game, User, Ranking
+from cardGame import views
 
 
 def index(request):

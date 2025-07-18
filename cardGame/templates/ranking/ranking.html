@@ -103,41 +103,8 @@
 
   <div class="ranking-card">
     <h2><span class="highlight">Piro</span> 명예의 전당</h2>
-    <div class="bars">
-      <!-- 1위 -->
-      <div class="bar-group">
-        <div class="bar" style="height: 180px;">
-          <div class="rank">1</div>
-        </div>
-        <div class="user-info">
-          user2<br />
-          <span class="score">11점</span>
-        </div>
-      </div>
 
-      <!-- 2위 -->
-      <div class="bar-group">
-        <div class="bar" style="height: 150px;">
-          <div class="rank">2</div>
-        </div>
-        <div class="user-info">
-          user1<br />
-          <span class="score">-1점</span>
-        </div>
-      </div>
-
-      <!-- 3위 -->
-      <div class="bar-group">
-        <div class="bar" style="height: 120px;">
-          <div class="rank">3</div>
-        </div>
-        <div class="user-info">
-          user4<br />
-          <span class="score">-6점</span>
-        </div>
-      </div>
-    </div>
-    <!-- {% if rankings %}
+    {% if rankings %}
     <div class="bars">
       {% for ranking in rankings %}
         {% if forloop.counter <= 3 %}
@@ -155,8 +122,8 @@
     </div>
   {% else %}
     <p>아직 랭킹에 등록된 유저가 없습니다.</p>
-  {% endif %} -->
-      
+  {% endif %}
+
 
     <button onclick="alert('전적 목록으로 이동합니다')">전적 목록</button>
   </div>
