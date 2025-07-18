@@ -152,7 +152,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'access_type': 'online'},
         'APP': {
             'client_id': config('SOCIAL_AUTH_GOOGLE_CLIENT_ID'),
-            'secret': config('SOCIAL_AUTH_GOOGLE_SECRET'),
+            'secret': config('SOCIAL_AUTH_GOOGLE_CLIENT_SECRET'),
             'key': ''
         }
     }
