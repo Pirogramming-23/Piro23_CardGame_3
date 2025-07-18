@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import index, game_start, create_game, game_mgp, ranking_view, ranking_all
+from .views import game_list, cancel_game, counter_attack, game_detail, start_new_game
 
 urlpatterns = [
 	path('', index, name="index"),
