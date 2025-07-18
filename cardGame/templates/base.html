@@ -13,21 +13,20 @@
 <body>
     <main>
         <div class="header">
-            <a href="" class="logo">Pirogramming Card Game</a>
+            <a href="{% url 'index' %}" class="logo">Pirogramming Card Game</a>
             <ol class="navbar">
-                {% if user.is_authenticated and user_data %}
-                <li><a href="{% url 'index' %}">로그인</a></li>
-                <li><a href="/accounts/signup/">회원가입</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'game_start' %}">게임하기</a></li>
+                    <li><a href="{% url 'ranking_all' %}">랭킹보기</a></li>
+                    <li><a href="{% url 'account_logout' %}">로그아웃</a></li>
                 {% else %}
-                <li><a href="/game/start/">게임하기</a></li>
-                <li><a>랭킹보기</a></li>
-                <li><a href="{% url 'account_logout' %}">로그아웃</a></li>
+                    <li><a href="{% url 'account_login' %}">로그인</a></li>
+                    <li><a href="{% url 'account_signup' %}">회원가입</a></li>
                 {% endif %}
             </ol>
         </div>
 
         <div class="content">
-            {# 로딩 될 부분 #}
             {% block content %}
             {% endblock %}
         </div>

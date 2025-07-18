@@ -120,12 +120,8 @@
     {% else %}
     <p style="text-align: center;">아직 등록된 랭킹이 없습니다.</p>
     {% endif %}
-
-      <form method="get" action="{% url 'game_mgp' %}">
-    <input type="hidden" name="mode" value="counter">
-    <button type="submit" class="back-button">🛡 반격하기</button>
     </form>
-    
+
     <a href="{% url 'ranking' %}" class="back-button">← 돌아가기</a>
     <a href="{% url 'index' %}" class="back-button">🏠 메인화면으로</a>
   </div>
