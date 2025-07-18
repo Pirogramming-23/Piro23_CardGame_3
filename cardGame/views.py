@@ -44,7 +44,7 @@ def game_start(request):
         'available_cards': available_cards,
         'other_users_with_status': users_with_game_status,
     }
-    return render(request, 'cardGame/game.html', context)
+    return render(request, 'cardGame/game_nyc.html', context)
 
 @login_required
 def create_game(request):
