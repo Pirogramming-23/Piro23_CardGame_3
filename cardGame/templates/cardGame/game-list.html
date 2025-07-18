@@ -42,15 +42,16 @@
         {% else %}
             <div class="game-status">알 수 없는 게임 상태</div>
         {% endif %}
-        <div class="game-detail-btn">
-            <a href="{% url 'game_detail' game.pk %}" class="btn primary">게임 정보</a>
-        </div>
     </div>
+    <div class="game-detail-btn">
+        <a href="{% url 'game_detail' game.pk %}" class="btn primary">게임 정보</a>
+    </div>
+</div>
 {% empty %}
-<div class="no-records">
+    <div class="no-records">
     <p>아직 참여한 게임 기록이 없습니다.</p>
     <a href="/game/start/" class="btn primary">새 게임 시작하기</a>
-</div>
+    </div>
 {% endfor %}
 
 {% endblock %}
