@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'cardGame/game-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-title">Record List</div>
+<div class="record-by">현재 플레이어: {{ username }}</div>
+<hr>
+
+{% for game in games %}
+<div class="game-record-item">
+    <div class="game-record-title">
+        {{ game.pk }} {{ game.attacker.username }} VS {{ game.defender.username }}
+    </div>
+
+    <div class="game-condition">
+        {% if game.status == 'finished' %}
+            <div class="game-status">
+                {% if game.winner == request.user %}
+                    결과: <span class="win-text">🎉🎉승리🎉🎉</span>
+                {% elif game.winner %}
+                    결과: <span class="lose-text">😭패배😭</span>
+                {% else %}
+                    결과: <span class="draw-text">🤝 무승부</span>
+                {% endif %}
+            </div>
+        {% elif game.status == 'pending' %}
+            {% if game.attacker == request.user %}
+                <div class="game-status">진행중 ...</div>
+                <form action="{% url 'cancel_game' game.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="cancelgame-btn">게임 취소</button>
+                </form>
+            {% elif game.defender == request.user %}
+                <form action="{% url 'counter_attack' game.pk %}{#game_mgp 로 수정#}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="counterattack-btn">CounterAttack</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <div class="game-status">알 수 없는 게임 상태</div>
+        {% endif %}
+    </div>
+    <div class="game-detail-btn">
+        <a href="{% url 'game_detail' game.pk %}" class="btn primary">게임 정보</a>
+    </div>
+</div>
+{% empty %}
+    <div class="no-records">
+    <p>아직 참여한 게임 기록이 없습니다.</p>
+    <a href="/game/start/" class="btn primary">새 게임 시작하기</a>
+    </div>
+{% endfor %}
+
+{% endblock %}

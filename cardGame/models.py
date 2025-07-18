@@ -18,13 +18,13 @@ class Game(models.Model):
     defender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='defender_games')
 
     attacker_card = models.IntegerField()
-    defender_card = models.IntegerField(null=True, blank=True) 
+    defender_card = models.IntegerField(null=True, blank=True, default=None)
 
     win_condition = models.CharField(max_length=10)  # 'high' or 'low'
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='won_games')
 
-    point_change = models.IntegerField(null=True, blank=True)
-    status = models.CharField(max_length=20)  # 'pending', 'completed'
+    point_change = models.IntegerField(null=True, blank=True, default=0)
+    status = models.CharField(max_length=20)  # 'pending', 'finished'
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -38,6 +38,6 @@ class Ranking(models.Model):
 
 class GameLog(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='logs')
-    action = models.CharField(max_length=20)  # 'attack', 'defense', 'result' 등
+    action = models.CharField(max_length=20)
     detail = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

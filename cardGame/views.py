@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from allauth.socialaccount.models import SocialAccount
+from django.db.models import Q
 from .models import Game, User, Ranking, Card
 from cardGame import views
 import random
@@ -248,3 +249,31 @@ def create_game(request):
         #post아니면 game_start 페이지로 리다이렉트
         return redirect('game_start')
 
+    return render(request, 'cardGame/game.html')
+
+def game_list(request):
+    social = SocialAccount.objects.get(user=request.user)
+    games = Game.objects.filter(Q(attacker=request.user) | Q(defender=request.user)).select_related('attacker', 'defender', 'winner').order_by('-created_at')
+    context = {
+        'username': request.user.username,
+        'games' : games,
+    }
+    return render(request, 'cardGame/game-list.html', context=context)
+
+def cancel_game(request, pk):
+    game = Game.objects.get(id=pk)
+    game.delete()
+    return redirect('game_list')
+
+def counter_attack(request):
+    # 반격
+    pass
+
+def start_new_game(request):
+    # 새로운 게임
+    pass
+
+def game_detail(request, pk):
+    game = Game.objects.get(id=pk)
+    context = {'game': game}
+    return render(request, 'cardGame/game-detail.html', context=context)
