@@ -68,7 +68,9 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [
+            BASE_DIR / "cardGame" / "templates"
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -150,8 +152,8 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
         'APP': {
-            'client_id': config('SOCIAL_AUTH_GOOGLE_CLIENT_ID'),
-            'secret': config('SOCIAL_AUTH_GOOGLE_CLIENT_SECRET'),
+            'client_id': config('SOCIAL_AUTH_GOOGLE_CLIENT_ID', default='temp_client_id'),
+            'secret': config('SOCIAL_AUTH_GOOGLE_CLIENT_SECRET', default='temp_secret'),
             'key': ''
         }
     }
