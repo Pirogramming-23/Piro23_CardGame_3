@@ -13,7 +13,7 @@
         <!-- 결과 보여주는 부분 -->
         <div class="game-result-page">
             <div class="vs-title">
-                {{ selected_card }} - user4 VS user1
+                {{ request.user.username }} VS {{ opponent_username|default:"상대방" }}
             </div>
             
             <div class="game-info">

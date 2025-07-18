@@ -16,7 +16,7 @@
     </div>
 
     <div class="game-condition">
-        {% if game.status == 'finished' %}
+        {% if game.status == 'completed' %}
             <div class="game-status">
                 {% if game.winner == request.user %}
                     결과: <span class="win-text">🎉🎉승리🎉🎉</span>

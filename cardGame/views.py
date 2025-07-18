@@ -138,15 +138,30 @@ def ranking_all(request):
     return render(request, 'ranking/ranking_all.html', context)
 
 
-@login_required
+@login_required 
 def game_mgp(request):
+    # 사용자가 수비자인 pending 게임 찾기
+    pending_game = Game.objects.filter(defender=request.user, status='pending').first()
+    
     if request.method == 'GET':
-        is_counter_mode = request.GET.get('mode') == 'counter'
-
-        if is_counter_mode:
-            # 기존 세션에서 값 사용 (반격)
-            opponent_card = request.session.get('opponent_card')
-            is_higher_wins = request.session.get('is_higher_wins')
+        if pending_game:
+            # 반격 모드: 실제 게임 데이터 사용
+            opponent_card = pending_game.attacker_card
+            is_higher_wins = pending_game.win_condition == 'high'
+            
+            # 카드 5개 뽑기
+            my_cards = random.sample(range(1, 11), 5)
+            
+            context = {
+                'my_cards': my_cards,
+                'game_state': 'selecting',
+                'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다',
+                'is_counterattack': True,
+                'game_id': pending_game.id,
+                'opponent_username': pending_game.attacker.username
+            }
+            
+            return render(request, 'cardGame/game_mgp.html', context)
         else:
             # 일반 게임: 새로운 게임 시작
             opponent_card = random.randint(1, 10)
@@ -154,57 +169,100 @@ def game_mgp(request):
             request.session['opponent_card'] = opponent_card
             request.session['is_higher_wins'] = is_higher_wins
 
-        # 카드 5개 뽑기
-        my_cards = random.sample(range(1, 11), 5)
-        request.session['my_cards'] = my_cards
-        request.session['game_state'] = 'selecting'
+            # 카드 5개 뽑기
+            my_cards = random.sample(range(1, 11), 5)
+            request.session['my_cards'] = my_cards
+            request.session['game_state'] = 'selecting'
 
-        context = {
-            'my_cards': my_cards,
-            'game_state': 'selecting',
-            'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다',
-            'is_counterattack': is_counter_mode
-        }
+            context = {
+                'my_cards': my_cards,
+                'game_state': 'selecting',
+                'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다',
+                'is_counterattack': False
+            }
 
-        return render(request, 'cardGame/game_mgp.html', context)
+            return render(request, 'cardGame/game_mgp.html', context)
 
     elif request.method == 'POST':
         selected_card = int(request.POST.get('selected_card'))
-        opponent_card = request.session.get('opponent_card')
-        is_higher_wins = request.session.get('is_higher_wins')
-        my_cards = request.session.get('my_cards')
+        
+        if pending_game:
+            # 반격 모드: 실제 게임 완료 처리
+            pending_game.defender_card = selected_card
+            
+            # 게임 결과 처리
+            process_game_result(pending_game)
+            
+            # 결과 표시를 위한 컨텍스트
+            opponent_card = pending_game.attacker_card
+            is_higher_wins = pending_game.win_condition == 'high'
+            
+            if selected_card == opponent_card:
+                result = '무승부!'
+                result_class = 'draw'
+                my_score = 0
+                opponent_score = 0
+            elif (is_higher_wins and selected_card > opponent_card) or (not is_higher_wins and selected_card < opponent_card):
+                result = '승리!'
+                result_class = 'win'
+                my_score = selected_card
+                opponent_score = -opponent_card
+            else:
+                result = '패배!'
+                result_class = 'lose'
+                my_score = -selected_card
+                opponent_score = opponent_card
 
-        if selected_card == opponent_card:
-            result = '무승부!'
-            result_class = 'draw'
-            my_score = 0
-            opponent_score = 0
-        elif (is_higher_wins and selected_card > opponent_card) or (not is_higher_wins and selected_card < opponent_card):
-            result = '승리!'
-            result_class = 'win'
-            my_score = selected_card
-            opponent_score = -opponent_card
+            context = {
+                'selected_card': selected_card,
+                'opponent_card': opponent_card,
+                'result': result,
+                'result_class': result_class,
+                'my_score': my_score,
+                'opponent_score': opponent_score,
+                'game_state': 'finished',
+                'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다',
+                'opponent_username': pending_game.attacker.username
+            }
+
+            return render(request, 'cardGame/game_mgp.html', context)
         else:
-            result = '패배!'
-            result_class = 'lose'
-            my_score = -selected_card
-            opponent_score = opponent_card
+            # 일반 게임: 세션 기반 처리
+            opponent_card = request.session.get('opponent_card')
+            is_higher_wins = request.session.get('is_higher_wins')
+            my_cards = request.session.get('my_cards')
 
-        request.session['game_state'] = 'finished'
+            if selected_card == opponent_card:
+                result = '무승부!'
+                result_class = 'draw'
+                my_score = 0
+                opponent_score = 0
+            elif (is_higher_wins and selected_card > opponent_card) or (not is_higher_wins and selected_card < opponent_card):
+                result = '승리!'
+                result_class = 'win'
+                my_score = selected_card
+                opponent_score = -opponent_card
+            else:
+                result = '패배!'
+                result_class = 'lose'
+                my_score = -selected_card
+                opponent_score = opponent_card
 
-        context = {
-            'my_cards': my_cards,
-            'selected_card': selected_card,
-            'opponent_card': opponent_card,
-            'result': result,
-            'result_class': result_class,
-            'my_score': my_score,
-            'opponent_score': opponent_score,
-            'game_state': 'finished',
-            'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다'
-        }
+            request.session['game_state'] = 'finished'
 
-        return render(request, 'cardGame/game_mgp.html', context)
+            context = {
+                'my_cards': my_cards,
+                'selected_card': selected_card,
+                'opponent_card': opponent_card,
+                'result': result,
+                'result_class': result_class,
+                'my_score': my_score,
+                'opponent_score': opponent_score,
+                'game_state': 'finished',
+                'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다'
+            }
+
+            return render(request, 'cardGame/game_mgp.html', context)
 
 
 @login_required
