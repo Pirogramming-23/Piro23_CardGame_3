@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from allauth.socialaccount.models import SocialAccount
+from .models import Game, User, Ranking, Card
+from cardGame import views
 import random
 from django.contrib.auth.decorators import login_required
-from .models import User, Game, Card
 
 def index(request):
     user_data = None
@@ -26,7 +27,56 @@ def game_start(request):
     
     #현재 사용자를 제외한 모든 User 객체
     other_users = User.objects.exclude(id=request.user.id) 
+    return render(request, 'cardGame/game.html')
 
+
+
+#게임 결과 처리
+def process_game_result(game: Game):
+    attacker = game.attacker
+    defender = game.defender
+    a_card = game.attacker_card
+    d_card = game.defender_card
+    win_type = game.win_condition  # 'high' or 'low'
+
+    # 승패 결정
+    if a_card == d_card:
+        game.winner = None
+        game.point_change = 0
+    else:
+        if (win_type == 'high' and a_card > d_card) or (win_type == 'low' and a_card < d_card):
+            game.winner = attacker
+            game.point_change = a_card
+            attacker.point += a_card
+            defender.point -= d_card
+        else:
+            game.winner = defender
+            game.point_change = d_card
+            defender.point += d_card
+            attacker.point -= a_card
+
+    game.status = 'completed'
+    attacker.save()
+    defender.save()
+    game.save()
+
+    update_ranking(attacker)
+    update_ranking(defender)
+
+#랭킹 갱신 함수 
+def update_ranking(user: User):
+    ranking, created = Ranking.objects.get_or_create(user=user)
+    ranking.point = user.point
+
+    ranking.save()
+
+def ranking_view(request):
+    rankings = Ranking.objects.select_related('user').order_by('-point')
+    return render(request, 'ranking/ranking.html', {'rankings': rankings})
+
+def ranking_all(request):
+    rankings = Ranking.objects.select_related('user').order_by('-point')
+    return render(request, 'ranking/ranking_all.html', {'rankings': rankings})
     #user에 대해 이미 진행 중인 게임이 있는지 확인
     users_with_game_status = []
     for user in other_users:
@@ -156,3 +206,4 @@ def create_game(request):
     else:
         #post아니면 game_start 페이지로 리다이렉트
         return redirect('game_start')
+

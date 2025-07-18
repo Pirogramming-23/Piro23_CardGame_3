@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Piro 전체 랭킹</title>
+  <style>
+    body {
+      background-color: #fbeae3;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #5d2b7f;
+    }
+
+    .ranking-list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ranking-list th, .ranking-list td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .ranking-list th {
+      background-color: #fbc1a1;
+      color: #5d2b7f;
+    }
+
+    .ranking-list tr:hover {
+      background-color: #fdf1ec;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 2px solid #5d2b7f;
+      color: #5d2b7f;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .back-button:hover {
+      background: #5d2b7f;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Piro 전체 랭킹</h2>
+
+    {% if rankings %}
+    <table class="ranking-list">
+      <thead>
+        <tr>
+          <th>순위</th>
+          <th>유저명</th>
+          <th>점수</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ranking in rankings %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ ranking.user.username }}</td>
+          <td>{{ ranking.point }}점</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center;">아직 등록된 랭킹이 없습니다.</p>
+    {% endif %}
+
+    <a href="{% url 'ranking' %}" class="back-button">← 돌아가기</a>
+  </div>
+
+</body>
+</html>
