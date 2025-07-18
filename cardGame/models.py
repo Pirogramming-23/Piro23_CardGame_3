@@ -18,12 +18,12 @@ class Game(models.Model):
     defender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='defender_games')
 
     attacker_card = models.IntegerField()
-    defender_card = models.IntegerField()
+    defender_card = models.IntegerField(null=True, blank=True) 
 
     win_condition = models.CharField(max_length=10)  # 'high' or 'low'
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='won_games')
 
-    point_change = models.IntegerField()
+    point_change = models.IntegerField(null=True, blank=True)
     status = models.CharField(max_length=20)  # 'pending', 'completed'
 
     created_at = models.DateTimeField(auto_now_add=True)
