@@ -17,7 +17,7 @@
             <p><small>{{ user_data.email }}</small></p>
             <p class="uid">Google UID: {{ user_data.google_id }}</p>
 
-            <form action="/game/start/" method="get">
+            <form action="{% url 'game_start' %}" method="get">
             <button class="btn primary">🎮 게임 시작</button>
             </form>
             <a class="btn secondary" href="{% url 'account_logout' %}">🔓 로그아웃</a>

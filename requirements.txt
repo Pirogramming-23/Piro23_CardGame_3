@@ -1,0 +1,7 @@
+django
+python-decouple
+django-allauth
+Pillow
+requests
+PyJWT
+cryptography
