@@ -139,40 +139,40 @@ def ranking_all(request):
 
 @login_required
 def game_mgp(request):
-    # 게임 시작
     if request.method == 'GET':
-        # 새로운 게임 시작
-        opponent_card = random.randint(1, 10)
-        is_higher_wins = random.choice([True, False])
-        
-        # 내 카드 5개 뽑기 (중복 없음)
-        all_numbers = list(range(1, 11))
-        my_cards = random.sample(all_numbers, 5)
-        
-        # 세션에 저장
-        request.session['opponent_card'] = opponent_card
-        request.session['is_higher_wins'] = is_higher_wins
+        is_counter_mode = request.GET.get('mode') == 'counter'
+
+        if is_counter_mode:
+            # 기존 세션에서 값 사용 (반격)
+            opponent_card = request.session.get('opponent_card')
+            is_higher_wins = request.session.get('is_higher_wins')
+        else:
+            # 일반 게임: 새로운 게임 시작
+            opponent_card = random.randint(1, 10)
+            is_higher_wins = random.choice([True, False])
+            request.session['opponent_card'] = opponent_card
+            request.session['is_higher_wins'] = is_higher_wins
+
+        # 카드 5개 뽑기
+        my_cards = random.sample(range(1, 11), 5)
         request.session['my_cards'] = my_cards
         request.session['game_state'] = 'selecting'
-        
+
         context = {
             'my_cards': my_cards,
             'game_state': 'selecting',
-            'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다'
+            'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다',
+            'is_counterattack': is_counter_mode
         }
-        
+
         return render(request, 'cardGame/game_mgp.html', context)
-    
+
     elif request.method == 'POST':
-        # 선택한 카드 처리
         selected_card = int(request.POST.get('selected_card'))
-        
-        # 세션에서 데이터 가져오기
         opponent_card = request.session.get('opponent_card')
         is_higher_wins = request.session.get('is_higher_wins')
         my_cards = request.session.get('my_cards')
-        
-        # 승부 판정
+
         if selected_card == opponent_card:
             result = '무승부!'
             result_class = 'draw'
@@ -188,10 +188,9 @@ def game_mgp(request):
             result_class = 'lose'
             my_score = -selected_card
             opponent_score = opponent_card
-        
-        # 게임 끝
+
         request.session['game_state'] = 'finished'
-        
+
         context = {
             'my_cards': my_cards,
             'selected_card': selected_card,
@@ -203,8 +202,9 @@ def game_mgp(request):
             'game_state': 'finished',
             'win_condition': '숫자가 큰 사람이 이깁니다' if is_higher_wins else '숫자가 작은 사람이 이깁니다'
         }
-        
+
         return render(request, 'cardGame/game_mgp.html', context)
+
 
 @login_required
 def create_game(request):

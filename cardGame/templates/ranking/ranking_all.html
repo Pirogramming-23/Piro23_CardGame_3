@@ -121,23 +121,13 @@
     <p style="text-align: center;">아직 등록된 랭킹이 없습니다.</p>
     {% endif %}
 
-    <!-- 반격 UI 영역 -->
-    {% if pending_game %}
-    <div class="section-divider"></div>
-    <h3 style="text-align: center; color: #5d2b7f;">🛡️ 반격 기회가 도착했습니다!</h3>
-    <p style="text-align: center;">{{ pending_game.attacker.username }} 님이 당신에게 도전했습니다.<br>카드를 골라 반격하세요!</p>
-
-    <form method="POST" style="text-align: center;">
-      {% csrf_token %}
-      <div class="card-box">
-        {% for card in defense_cards %}
-          <button type="submit" name="selected_card" value="{{ card }}" class="card">{{ card }}</button>
-        {% endfor %}
-      </div>
+      <form method="get" action="{% url 'game_mgp' %}">
+    <input type="hidden" name="mode" value="counter">
+    <button type="submit" class="back-button">🛡 반격하기</button>
     </form>
-    {% endif %}
-
+    
     <a href="{% url 'ranking' %}" class="back-button">← 돌아가기</a>
+    <a href="{% url 'index' %}" class="back-button">🏠 메인화면으로</a>
   </div>
 
 </body>
