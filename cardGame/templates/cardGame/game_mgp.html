@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반격하기 게임</title>
+    <link rel="stylesheet" href="{% static 'cardGame/style_mgp.css' %}">
+</head>
+<body>
+    <div class="game-container">
+        {% if selected_card %}
+        <!-- 결과 보여주는 부분 -->
+        <div class="game-result-page">
+            <div class="vs-title">
+                {{ request.user.username }} VS {{ opponent_username|default:"상대방" }}
+            </div>
+            
+            <div class="game-info">
+                <p>선택한 카드: {{ selected_card }}</p>
+                <p>상대방 카드: {{ opponent_card }}</p>
+                <p><strong>{{ win_condition }}</strong></p>
+            </div>
+            
+            <div class="cards-comparison">
+                <div class="player-card">
+                    <h4>내 카드</h4>
+                    <div class="card my-card">
+                        {{ selected_card }}
+                    </div>
+                </div>
+                
+                <div class="vs-text">VS</div>
+                
+                <div class="player-card">
+                    <h4>상대방 카드</h4>
+                    <div class="card opponent-card">
+                        {{ opponent_card }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-message {{ result_class }}">
+                {{ result }}<br>
+                {% if result == '무승부!' %}
+                    점수 변동 없음
+                {% else %}
+                    내 점수: {% if my_score > 0 %}+{% endif %}{{ my_score }} | 상대방 점수: {% if opponent_score > 0 %}+{% endif %}{{ opponent_score }}
+                {% endif %}
+            </div>
+            
+            <a href="{% url 'game_list' %}" class="new-game-btn">전체목록</a>
+        </div>
+        
+        {% else %}
+        <!-- 카드 고르는 화면 -->
+        <div class="card-selection-page">
+            <h1 class="game-title">반격할 카드를 고르세요</h1>
+            <div class="game-status">
+                <p>상대방이 카드를 선택했습니다.</p>
+            </div>
+            
+            <div class="cards-container">
+                {% for card in my_cards %}
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="selected_card" value="{{ card }}">
+                    <button type="submit" class="card">
+                        {{ card }}
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

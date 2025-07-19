@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PirogrammerCardGame</title>
+
+    <link rel="stylesheet" href="{% static 'cardGame/base.css' %}">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <main>
+        <div class="header">
+            <a href="{% url 'index' %}" class="logo">Pirogramming Card Game</a>
+            <ol class="navbar">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'game_start' %}">게임하기</a></li>
+                    <li><a href="{% url 'ranking_all' %}">랭킹보기</a></li>
+                    <li><a href="{% url 'account_logout' %}">로그아웃</a></li>
+                {% else %}
+                    <li><a href="{% url 'account_login' %}">로그인</a></li>
+                    <li><a href="{% url 'account_signup' %}">회원가입</a></li>
+                {% endif %}
+            </ol>
+        </div>
+
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <div class="footer">
+            <p>@피로그래밍 23기 카드게임 3조</p>
+        </div>
+    </main>
+</body>
+</html>

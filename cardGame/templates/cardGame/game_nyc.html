@@ -1,0 +1,167 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f2f2f2;
+    text-align: center;
+  }
+  .card-box {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+  .card {
+    width: 120px;
+    height: 180px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 3px solid transparent;
+  }
+  .card.selected {
+    border: 3px solid #00aa88;
+    transform: scale(1.05);
+    background-color: #e0ffe0;
+  }
+  .card:hover:not(.selected) {
+    transform: scale(1.05);
+    background-color: #e0ffe0;
+  }
+  button {
+    margin-top: 40px;
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    background-color: #00aa88;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #008066;
+  }
+
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  .user-select-box {
+    margin-top: 30px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+</style>
+<h1>🎮 게임을 시작합니다!</h1>
+<p>카드를 선택해 상대방에게 도전하세요.</p>
+
+<form id="gameForm" method="post" action="{% url 'create_game' %}">
+  {% csrf_token %} //랜덤숫자카드들
+  <div class="card-box">
+    {% for card_number in available_cards %}
+    <div class="card" data-card-value="{{ card_number }}">
+      {{ card_number }}
+    </div>
+    {% endfor %}
+  </div>
+
+  <input type="hidden" name="selected_card" id="selected_card_input" />
+
+  <div style="margin-top: 30px">
+    <label for="defender_select">상대방 선택:</label>
+    <select name="defender" id="defender_select" class="user-select-box">
+      <option value="" disabled selected>상대방을 선택하세요</option>
+      {% if other_users_with_status %} {% for data in other_users_with_status %}
+      <option
+        value="{{ data.user.id }}"
+        {%
+        if
+        data.has_pending_game
+        %}disabled{%
+        endif
+        %}
+      >
+        {{ data.user.username }} {% if data.has_pending_game %} (방어를 기다리고
+        있습니다){% endif %}
+      </option>
+      {% endfor %} {% else %}
+      <option value="" disabled>도전할 상대방이 없습니다.</option>
+      {% endif %}
+    </select>
+  </div>
+
+  <button type="submit" id="startGameButton" disabled>
+    상대방에게 도전하기
+  </button>
+</form>
+
+<p style="margin-top: 30px">
+  <a href="{% url 'index' %}">← 홈으로 돌아가기</a>
+</p>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".card");
+    const selectedCardInput = document.getElementById("selected_card_input");
+    const startGameButton = document.getElementById("startGameButton");
+    const defenderSelect = document.getElementById("defender_select");
+
+    let selectedValue = null;
+    // 초기 selectedDefender 값은 드롭다운의 첫 번째 유효한(disabled가 아닌) 옵션 또는 null
+    let selectedDefender = defenderSelect.value;
+    if (
+      defenderSelect.options.length > 0 &&
+      defenderSelect.options[defenderSelect.selectedIndex].disabled
+    ) {
+      selectedDefender = null; // 초기 선택된 옵션이 disabled라면 null로 초기화
+    }
+
+    // 카드 클릭 이벤트 리스너
+    cards.forEach((card) => {
+      card.addEventListener("click", function () {
+        cards.forEach((c) => c.classList.remove("selected"));
+        this.classList.add("selected");
+        selectedValue = this.dataset.cardValue;
+        selectedCardInput.value = selectedValue;
+        checkFormValidity();
+      });
+    });
+
+    // 수비자 선택 변경 이벤트 리스너
+    defenderSelect.addEventListener("change", function () {
+      selectedDefender = this.value;
+      checkFormValidity();
+    });
+
+    // 폼 유효성 검사 함수
+    function checkFormValidity() {
+      // 카드가 선택되었고, 유효한 수비자가 선택되었는지 확인 (비활성화되지 않은 옵션인지도 포함)
+      const selectedOption =
+        defenderSelect.options[defenderSelect.selectedIndex];
+      if (
+        selectedValue !== null &&
+        selectedDefender &&
+        selectedDefender !== "" &&
+        !selectedOption.disabled // 선택된 옵션이 disabled가 아닌지 추가 확인
+      ) {
+        startGameButton.disabled = false;
+      } else {
+        startGameButton.disabled = true;
+      }
+    }
+
+    // 페이지 로드 시 초기 유효성 검사 실행
+    checkFormValidity();
+  });
+</script>
+
+{% endblock %}
